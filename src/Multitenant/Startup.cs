@@ -32,28 +32,18 @@ namespace Multitenant
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            
             services.AddTransient<IDbContextFactory, DbContextFactory>();
-            services.AddScoped<ITenantProvider, FileTenantProvider>();
+            
 
             // not used at runtime, but required to support code-first migrations
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            // provides an instance of ITenant using dependency injection, a shorthand version of
-            // *ITenantProvider.GetTenant*
-            services.AddScoped(typeof(ITenant), serviceProvider => {
-                var tenantProvider = serviceProvider.GetService<ITenantProvider>();
-                return tenantProvider.GetTenant();
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
